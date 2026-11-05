@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>SMBC Dummy</title>
+<!-- PWA・全画面表示用の設定 -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+   * {
+     box-sizing: border-box;
+     margin: 0;
+     padding: 0;
+     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+     -webkit-tap-highlight-color: transparent;
+   }
+   body {
+     background-color: #054e38; /* SMBCグリーン背景 */
+     color: #333;
+     padding-top: env(safe-area-inset-top);
+     padding-bottom: env(safe-area-inset-bottom);
+     min-height: 100vh;
+     display: flex;
+     flex-direction: column;
+   }
+   /* ヘッダーエリア */
+   .header {
+     padding: 12px 16px 8px;
+     color: #fff;
+   }
+   .header-top {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     margin-bottom: 8px;
+   }
+   .logo {
+     font-size: 22px;
+     font-weight: bold;
+     letter-spacing: 1px;
+     display: flex;
+     align-items: center;
+     gap: 6px;
+   }
+   .logo-mark {
+     width: 20px;
+     height: 20px;
+     background: #c3d600; /* ロゴのアクセントカラー */
+     clip-path: polygon(0 0, 100% 0, 75% 100%, 0% 100%);
+   }
+   .header-icons {
+     display: flex;
+     gap: 12px;
+   }
+   .icon-btn {
+     width: 28px;
+     height: 28px;
+     border-radius: 50%;
+     background: rgba(255, 255, 255, 0.2);
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     font-size: 14px;
+     font-weight: bold;
+   }
+   .header-time {
+     text-align: right;
+     font-size: 12px;
+     opacity: 0.9;
+   }
+   /* メインコンテンツ（スクロールエリア） */
+   .content {
+     flex: 1;
+     padding: 8px 12px 80px;
+     display: flex;
+     flex-direction: column;
+     gap: 10px;
+     overflow-y: auto;
+   }
+   .card {
+     background: #fff;
+     border-radius: 12px;
+     padding: 14px 16px;
+     position: relative;
+     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+   }
+   .card-arrow {
+     position: absolute;
+     right: 16px;
+     top: 16px;
+     color: #888;
+     font-size: 14px;
+   }
+   /* 口座残高カード */
+   .account-type {
+     font-size: 15px;
+     font-weight: bold;
+     margin-bottom: 2px;
+   }
+   .account-sub {
+     font-size: 11px;
+     color: #666;
+     margin-bottom: 12px;
+   }
+   .balance-row {
+     display: flex;
+     justify-content: space-between;
+     align-items: flex-end;
+   }
+   .balance-val {
+     font-size: 26px;
+     font-weight: bold;
+     letter-spacing: -0.5px;
+   }
+   .balance-val span {
+     font-size: 14px;
+     margin-left: 2px;
+   }
+   .btn-hide {
+     background: #f0f0f0;
+     border: none;
+     padding: 4px 10px;
+     border-radius: 14px;
+     font-size: 11px;
+     color: #333;
+     font-weight: bold;
+   }
+   /* バナーカード (Olive) */
+   .banner-olive {
+     background: #fff4e5;
+     border: 1px solid #ecc9a4;
+   }
+   .olive-badge {
+     position: absolute;
+     top: -8px;
+     left: 120px;
+     background: #e53935;
+     color: #fff;
+     font-size: 11px;
+     width: 18px;
+     height: 18px;
+     border-radius: 50%;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     font-weight: bold;
+   }
+   .olive-text {
+     font-size: 13px;
+     font-weight: bold;
+     line-height: 1.3;
+     margin-bottom: 10px;
+     color: #111;
+   }
+   .btn-olive {
+     background: #ff5722;
+     color: #fff;
+     text-align: center;
+     padding: 8px 0;
+     border-radius: 20px;
+     font-size: 13px;
+     font-weight: bold;
+     display: block;
+     width: 80%;
+     margin: 0 auto;
+   }
+   /* 資産総額エリア */
+   .asset-header {
+     color: #fff;
+     font-size: 13px;
+     font-weight: bold;
+     margin: 6px 4px 2px;
+     display: flex;
+     align-items: center;
+     gap: 6px;
+   }
+   .mf-logo {
+     background: #ff9800;
+     color: #fff;
+     font-size: 9px;
+     padding: 1px 4px;
+     border-radius: 3px;
+   }
+   /* フッターナビゲーション */
+   .bottom-nav {
+     position: fixed;
+     bottom: 0;
+     left: 0;
+     right: 0;
+     height: 60px;
+     background: #fff;
+     display: flex;
+     justify-content: space-around;
+     align-items: center;
+     border-top: 1px solid #e0e0e0;
+     padding-bottom: env(safe-area-inset-bottom);
+   }
+   .nav-item {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     font-size: 10px;
+     color: #666;
+     gap: 3px;
+   }
+   .nav-item.active {
+     color: #054e38;
+     font-weight: bold;
+   }
+   .nav-icon {
+     font-size: 18px;
+   }
+   /* 中央の振込ボタン */
+   .nav-center {
+     width: 50px;
+     height: 50px;
+     background: #054e38;
+     border-radius: 50%;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     color: #fff;
+     margin-top: -20px;
+     border: 3px solid #fff;
+     font-size: 9px;
+   }
+</style>
+</head>
+<body>
+<!-- ヘッダー -->
+<div class="header">
+<div class="header-top">
+<div class="logo">
+<div class="logo-mark"></div> SMBC
+</div>
+<div class="header-icons">
+<div class="icon-btn">🔔</div>
+<div class="icon-btn">?</div>
+</div>
+</div>
+<div class="header-time">20:08 現在</div>
+</div>
+<!-- コンテンツ -->
+<div class="content">
+<!-- 残高カード -->
+<div class="card">
+<span class="card-arrow">＞</span>
+<div class="account-type">残高別普通</div>
+<div class="account-sub">東京営業部 9680471</div>
+<div class="balance-row">
+<div class="balance-val">47,963<span>円</span></div>
+<button class="btn-hide">非表示</button>
+</div>
+</div>
+<!-- デビットカード -->
+<div class="card">
+<span class="card-arrow">＞</span>
+<div class="account-type">SMBCデビット</div>
+</div>
+<!-- Olive バナー -->
+<div class="card banner-olive">
+<div class="olive-badge">1</div>
+<div class="olive-text">ご利用の口座はOlive口座に<br>アップデートできます</div>
+<div class="btn-olive">Oliveへアップデート</div>
+</div>
+<!-- Olive 機能 -->
+<div class="card">
+<span class="card-arrow">＞</span>
+<div class="account-type" style="font-size: 14px;">Oliveのサービス・機能を見る</div>
+</div>
+<!-- SBI証券 -->
+<div class="card">
+<span class="card-arrow">⚠️ 設定してください ＞</span>
+<div class="account-type" style="color: #0a2540; font-weight: bold;">SBI証券 ❓</div>
+<div style="font-size: 11px; color: #666; margin-top: 4px;">
+       設定で資産の表示・分析機能や無料相談が利用できます
+</div>
+</div>
+<!-- V POINT -->
+<div class="card">
+<span class="card-arrow">＞</span>
+<div class="account-type" style="font-size: 16px; letter-spacing: 1px;">V POINT</div>
+</div>
+<!-- 資産総額 -->
+<div class="asset-header">
+     資産総額 <span class="mf-logo">M Money Forward ME</span> ⓘ
+</div>
+<div class="card" style="display: flex; justify-content: space-between; align-items: center;">
+<div style="font-size: 13px; color: #666;">- - - 円 <span style="margin-left: 8px;">前日比 - - - 円</span></div>
+<button class="btn-hide" style="background: #e8f5e9; color: #2e7d32;">連携する ＞</button>
+</div>
+</div>
+<!-- 下部ナビゲーションバー -->
+<div class="bottom-nav">
+<div class="nav-item active">
+<div class="nav-icon">🏠</div>
+<div>ホーム</div>
+</div>
+<div class="nav-item">
+<div class="nav-icon">💳</div>
+<div>口座一覧</div>
+</div>
+<div class="nav-center">
+<div style="font-size: 16px;">￥</div>
+<div>振込・振替</div>
+</div>
+<div class="nav-item">
+<div class="nav-icon">📊</div>
+<div>資産管理</div>
+</div>
+<div class="nav-item">
+<div class="nav-icon">≡</div>
+<div>メニュー</div>
+</div>
+</div>
+</body>
+</html>
